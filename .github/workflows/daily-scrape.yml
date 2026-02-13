@@ -3,8 +3,7 @@ name: Immigration Collector
 on:
   workflow_dispatch:
   schedule:
-    # daily at 03:17 UTC (pick any time)
-    - cron: "17 3 * * *"
+    - cron: "0 */6 * * *"
 
 concurrency:
   group: collector
@@ -13,11 +12,10 @@ concurrency:
 jobs:
   crawl:
     runs-on: ubuntu-latest
-    timeout-minutes: 355   # must be < 360 (6 hours limit on hosted runners)
+    timeout-minutes: 355
     env:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-      NODE_ENV: production
 
     steps:
       - name: Checkout
@@ -28,9 +26,20 @@ jobs:
         with:
           node-version: "22"
           cache: "npm"
+          cache-dependency-path: collector/package-lock.json
+
+      - name: Debug
+        working-directory: collector
+        run: |
+          node -v
+          npm -v
+          ls -la
+          cat package.json
 
       - name: Install
+        working-directory: collector
         run: npm ci
 
       - name: Run crawler
+        working-directory: collector
         run: npm run crawl
