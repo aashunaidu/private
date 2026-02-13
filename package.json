@@ -8,7 +8,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "@supabase/supabase-js": "^2.95.3",
     "cheerio": "^1.2.0",
@@ -16,12 +15,11 @@
     "fast-xml-parser": "^5.3.5",
     "js-yaml": "^4.1.1",
     "undici": "^7.21.0",
-    "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0"
   },
   "devDependencies": {
-    "@types/node": "^25.2.3",
-    "ts-node": "^10.9.2"
+    "@types/node": "^22.0.0"
   },
   "type": "module"
 }
