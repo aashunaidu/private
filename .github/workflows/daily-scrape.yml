@@ -3,6 +3,7 @@ name: Immigration Collector
 on:
   workflow_dispatch:
   schedule:
+    # Runs every 6 hours
     - cron: "0 */6 * * *"
 
 concurrency:
@@ -13,12 +14,14 @@ jobs:
   crawl:
     runs-on: ubuntu-latest
     timeout-minutes: 355
+    
     env:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      # We removed NODE_ENV to ensure devDependencies (like tsx) are installed
 
     steps:
-      - name: Checkout
+      - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Setup Node
@@ -26,20 +29,11 @@ jobs:
         with:
           node-version: "22"
           cache: "npm"
-          cache-dependency-path: collector/package-lock.json
+          # Removed the specific path line so it defaults to the root package-lock.json
 
-      - name: Debug
-        working-directory: collector
-        run: |
-          node -v
-          npm -v
-          ls -la
-          cat package.json
-
-      - name: Install
-        working-directory: collector
+      - name: Install Dependencies
         run: npm ci
 
-      - name: Run crawler
-        working-directory: collector
-        run: npm run crawl
+      - name: Run Crawler
+        # This forces the use of the local tsx package without relying on package.json scripts
+        run: npx tsx src/index.ts
