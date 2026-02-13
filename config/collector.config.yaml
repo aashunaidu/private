@@ -1,0 +1,166 @@
+user_agent: "ImmigrationCollectorBot/0.1 (local testing)"
+
+schedule:
+  # default: check again in 7 days
+  default_interval_hours: 168
+
+  # check again for URLs discovered from RSS (news)
+  rss_interval_hours: 24
+
+  # sitemaps get checked frequently for discovery; but individual URLs can be rechecked slower
+  sitemap_interval_hours: 168
+
+  # trusted law pages (IRPA/IRPR/Gazette regs)
+  trusted_interval_hours: 168
+
+  # pages that look like “updates”
+  updates_interval_hours: 24
+
+  # if a URL failed, retry sooner
+  failed_retry_hours: 6
+
+  # keywords in URL that should be treated as "updates pages"
+  updates_url_contains:
+    - "/updates"
+    - "/notices"
+    - "/news"
+    - "canada-gazette"
+
+
+
+allowed_domains:
+  - "www.canada.ca"
+  - "laws-lois.justice.gc.ca"
+  - "laws.justice.gc.ca"
+  - "gazette.gc.ca"
+  - "www.ircc.canada.ca"
+  - "ircc.canada.ca"
+  - "www.cbsa-asfc.gc.ca"
+
+rss_feeds:
+  - "https://api.io.canada.ca/io-server/gc/news/en/v2?dept=departmentofcitizenshipandimmigration&sort=publishedDate&orderBy=desc&publishedDate%3E=2021-07-23&pick=50&format=atom&atomtitle=Immigration,%20Refugees%20and%20Citizenship%20Canada"
+
+# Add/remove whenever you want. Next run will pick it up.
+sitemaps:
+  - "https://www.canada.ca/en/immigration-refugees-citizenship.sitemap.xml"
+  - "https://www.ircc.canada.ca/sitemap.xml"
+  # French sitemap included for reference, but we drop /fr/ anyway
+  - "https://www.canada.ca/fr/immigration-refugies-citoyennete.sitemap.xml"
+
+seed_urls:
+  # IRCC hubs (important)
+  - "https://www.canada.ca/en/immigration-refugees-citizenship.html"
+  - "https://www.canada.ca/en/services/immigration-citizenship.html"
+  - "https://www.canada.ca/en/immigration-refugees-citizenship/news/notices.html"
+
+  # Manuals + Updates (very important)
+  - "https://www.canada.ca/en/immigration-refugees-citizenship/corporate/publications-manuals/operational-bulletins-manuals.html"
+  - "https://www.canada.ca/en/immigration-refugees-citizenship/corporate/publications-manuals/operational-bulletins-manuals/updates.html"
+
+  # Forms/guides
+  - "https://www.canada.ca/en/immigration-refugees-citizenship/services/application/application-forms-guides.html"
+
+  # IRPA / IRPR HTML anchors
+  - "https://laws-lois.justice.gc.ca/eng/acts/i-2.5/"
+  - "https://laws-lois.justice.gc.ca/eng/regulations/sor-2002-227/"
+
+  # IRPA / IRPR PDFs you provided
+  - "https://laws.justice.gc.ca/PDF/I-2.5.pdf"
+  - "https://laws-lois.justice.gc.ca/PDF/SOR-2002-227.pdf"
+
+  # Gazette
+  - "https://gazette.gc.ca/"
+
+crawl:
+  max_depth: 3
+  max_pages_per_run: 1200
+  per_domain_delay_ms: 250
+  timeout_ms: 20000
+
+filter:
+  # English only for canada.ca and most gov pages
+  english_only: true
+
+  # Canada.ca must stay in IRCC section OR be the main immigration services hub
+  canada_path_must_start_with:
+    - "/en/immigration-refugees-citizenship/"
+    - "/en/services/immigration-citizenship/"
+
+  main_content_selectors:
+    - "main"
+    - "[role='main']"
+    - "#main-content"
+    - "article"
+
+  immigration_terms:
+    - "immigration"
+    - "refugee"
+    - "refugees"
+    - "citizenship"
+    - "irpa"
+    - "irpr"
+    - "inadmissibility"
+    - "enforcement"
+    - "compliance"
+    - "permanent resident"
+    - "temporary resident"
+    - "study permit"
+    - "work permit"
+    - "express entry"
+    - "lmia"
+    - "regulations"
+    - "sor-"
+    - "si-"
+    - "canada gazette"
+
+  drop_extensions:
+    - ".jpg"
+    - ".jpeg"
+    - ".png"
+    - ".gif"
+    - ".svg"
+    - ".css"
+    - ".js"
+    - ".mp4"
+    - ".zip"
+
+  drop_path_contains:
+    - "/assets/"
+    - "/images/"
+    - "/fonts/"
+    - "/media/"
+
+  drop_query_params_prefix:
+    - "utm_"
+    - "gclid"
+    - "fbclid"
+
+  always_keep_contains:
+    - "laws-lois.justice.gc.ca/eng/acts/i-2.5"
+    - "laws-lois.justice.gc.ca/eng/regulations/sor-2002-227"
+    - "laws.justice.gc.ca/pdf/i-2.5"
+    - "laws-lois.justice.gc.ca/pdf/sor-2002-227"
+
+  score_threshold: 6
+
+  score_rules:
+    domain_bonus:
+      "laws-lois.justice.gc.ca": 5
+      "laws.justice.gc.ca": 5
+      "gazette.gc.ca": 5
+      "www.canada.ca": 2
+      "www.ircc.canada.ca": 2
+      "www.cbsa-asfc.gc.ca": 2
+
+    contains_bonus:
+      "regulations": 3
+      "sor-": 3
+      "si-": 3
+      "immigration": 3
+      "refugee": 3
+      "citizenship": 3
+
+    contains_penalty:
+      "contact": 5
+      "accessibility": 5
+      "careers": 5
