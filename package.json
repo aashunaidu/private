@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "crawl": "tsx src/index.ts"
+    "crawl": "npx tsx src/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -14,12 +14,12 @@
     "dotenv": "^17.3.1",
     "fast-xml-parser": "^5.3.5",
     "js-yaml": "^4.1.1",
-    "undici": "^7.21.0",
-    "tsx": "^4.19.0",
-    "typescript": "^5.5.0"
+    "typescript": "^5.5.0",
+    "undici": "^7.21.0"
   },
   "devDependencies": {
-    "@types/node": "^22.0.0"
+    "@types/node": "^22.0.0",
+    "tsx": "^4.21.0"
   },
   "type": "module"
 }
