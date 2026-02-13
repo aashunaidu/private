@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-  "crawl": "npx tsx src/index.ts"
+    "crawl": "npx tsx src/index.ts"
   },
   "keywords": [],
   "author": "",
